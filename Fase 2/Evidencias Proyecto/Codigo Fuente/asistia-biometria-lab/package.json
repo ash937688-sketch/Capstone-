@@ -1,0 +1,21 @@
+{
+  "name": "asistia-biometria-lab",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "test": "node --test",
+    "verify:local": "node local/verify-flow.mjs --public-fixture"
+  },
+  "dependencies": {
+    "@aws-sdk/client-rekognition": "^3.1167.0",
+    "nodemailer": "^10.5.0",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "jsdom": "^31.0.0"
+  }
+}

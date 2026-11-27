@@ -1,0 +1,12 @@
+﻿import test from 'node:test';
+import assert from 'node:assert/strict';
+import { fechaChile, validarSolicitudAsistencia, permitirMarcacionBiometrica } from './asistenciaFacialPolicy.js';
+const ahora = new Date('2026-11-23T15:00:00Z');
+const base = { alumnoId: 'A1', horarioId: 'H1', cursoId: 'C1', fecha: '2026-11-23', estado: 'Presente', diaHorario: 'Lunes' };
+test('fecha chilena correcta', () => assert.equal(fechaChile(ahora), '2026-11-23'));
+test('solicitud valida genera ID estable', () => assert.deepEqual(validarSolicitudAsistencia(base, ahora), { ok: true, idMarcacion: 'A1_H1_2026-11-23' }));
+test('rechaza dia incorrecto', () => assert.equal(validarSolicitudAsistencia({ ...base, diaHorario: 'Martes' }, ahora).ok, false));
+test('rechaza fecha anterior', () => assert.equal(validarSolicitudAsistencia({ ...base, fecha: '2026-11-22' }, ahora).ok, false));
+test('rechaza identificadores maliciosos', () => assert.equal(validarSolicitudAsistencia({ ...base, alumnoId: '../otro' }, ahora).ok, false));
+test('bloquea biometria sin controles completos', () => assert.equal(permitirMarcacionBiometrica({ consentimientoVigente: true }), false));
+test('permite biometria solo con todos los controles', () => assert.equal(permitirMarcacionBiometrica({ consentimientoVigente: true, identidadVinculada: true, pruebaDeVidaValidada: true, comparacionCalibrada: true, autorizacionInstitucional: true }), true));

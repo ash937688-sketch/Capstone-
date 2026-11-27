@@ -1,0 +1,23 @@
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
+
+export default function ProtectedRoute() {
+  const { user } = useAuth()
+  const location = useLocation()
+
+  if (!user) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{ from: location }}
+      />
+    )
+  }
+
+  if (user.scope === 'enrolamiento-piloto' && location.pathname !== '/enrolamiento') {
+    return <Navigate to="/enrolamiento" replace />
+  }
+
+  return <Outlet />
+}
